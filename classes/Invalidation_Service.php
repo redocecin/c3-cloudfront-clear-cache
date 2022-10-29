@@ -223,7 +223,7 @@ class Invalidation_Service {
 		if ( ! $this->should_invalidate( $new_status, $old_status ) ) {
 			return;
 		}
-		$this->invalidate_post_cache( $post );
+		$this->invalidate_post_cache( $post , false);
 	}
 
 	/**
@@ -298,6 +298,16 @@ class Invalidation_Service {
 		return $query;
 	}
 
+	public function create_post_invalidation( $post) {
+		$options  = $this->get_plugin_option();
+		if ( is_wp_error( $options ) ) {
+			return $options;
+		}
+		$link = get_permalink( $post );
+		$query = $this->invalidation_batch->create_batch_by_paths($options['distribution_id'], array($link) );
+		return $query;
+	}
+
 	/**
 	 * Invalidate the post's caches
 	 *
@@ -308,7 +318,7 @@ class Invalidation_Service {
 		if ( ! isset( $post ) ) {
 			return new \WP_Error( 'C3 Invalidation Error', 'No such post' );
 		}
-		$query = $this->create_post_invalidation_batch( array( $post ), $force );
+		$query = $this->create_post_invalidation($post);
 		return $this->invalidate_by_query( $query, $force );
 	}
 
