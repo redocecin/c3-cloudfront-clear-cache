@@ -128,6 +128,14 @@ class Invalidation_Batch_Service {
 		return $invalidation_batch->get_invalidation_request_parameter( $distribution_id );
 	}
 
+	public function create_batch_by_paths( string $distribution_id, array $paths = array() ) {
+		$invalidation_batch = new Invalidation_Batch();
+		foreach ( $paths as $path ) {
+			$invalidation_batch->put_invalidation_path( $path );
+		}
+		return $invalidation_batch->get_invalidation_request_parameter( $distribution_id );
+	}
+
 
 	/**
 	 * Invalidate all cache

@@ -124,6 +124,7 @@ class Invalidation_Service {
 		}
 
 		$invalidation_target = $_POST['invalidation_target'];
+		$invalidation_type = $_POST['invalidation_type'];
 
 		try {
 			if ( ! isset( $invalidation_target ) ) {
@@ -131,6 +132,9 @@ class Invalidation_Service {
 			}
 			if ( 'all' === $invalidation_target ) {
 				$result = $this->invalidate_all();
+			} elseif ('by_path' === $invalidation_type) {
+				$paths = explode(PHP_EOL, $invalidation_target);
+				$result       = $this->invalidate_paths_cache( $paths, true );
 			} else {
 				$post_service = new Post_Service();
 				$posts        = $post_service->list_posts_by_ids( explode( ',', $invalidation_target ) );
@@ -269,6 +273,15 @@ class Invalidation_Service {
 		return $options;
 	}
 
+	public function create_path_invalidation_batch( array $paths = array()) {
+		$options  = $this->get_plugin_option();
+		if ( is_wp_error( $options ) ) {
+			return $options;
+		}
+		$query = $this->invalidation_batch->create_batch_by_paths( $options['distribution_id'], $paths );
+		return $query;
+	}
+
 	/**
 	 * Create invalidation batch query for post
 	 *
@@ -296,6 +309,11 @@ class Invalidation_Service {
 			return new \WP_Error( 'C3 Invalidation Error', 'No such post' );
 		}
 		$query = $this->create_post_invalidation_batch( array( $post ), $force );
+		return $this->invalidate_by_query( $query, $force );
+	}
+
+	public function invalidate_paths_cache( array $paths = array(), $force = false ) {
+		$query = $this->create_path_invalidation_batch( $paths );
 		return $this->invalidate_by_query( $query, $force );
 	}
 

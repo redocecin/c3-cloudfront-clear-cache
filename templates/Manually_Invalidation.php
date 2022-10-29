@@ -20,40 +20,60 @@ if ( ! $options || ! isset( $options[ Constants::DISTRIBUTION_ID ] ) ) {
 }
 ?>
 
-	<table class='wp-list-table widefat plugins' style="margin-bottom: 2rem;">
-		<thead>
-			<tr>
-				<th colspan='2'>
-					<h2><?php _e( 'CloudFront Cache Control', $text_domain ); ?></h2>
-				</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<th>
-					<b><?php _e( 'Flush All Cache', $text_domain ); ?></b><br/>
-					<small><?php _e( "Notice: Every page's cache is removed.", $text_domain ); ?></small>
-				</th>
-				<td>
-					<form method='post' action=''>
-						<input type='hidden' name='invalidation_target' value='all' />
-						<?php echo wp_nonce_field( Constants::C3_INVALIDATION, Constants::C3_INVALIDATION, true, false ); ?>
-						<?php echo get_submit_button( __( 'Flush All Cache', $text_domain ) ); ?>
-					</form>
-				</td>
-			</tr>
-			<tr>
-				<th>
-					<b><?php _e( 'Flush Cache by Post ids', $text_domain ); ?></b><br/>
-					<small><?php _e( 'Provide a post ids like (1,2,3)', $text_domain ); ?></small>
-				</th>
-				<td>
-					<form method='post' action=''>
-						<input name="invalidation_target" placeholder="1,2,3" type="text" required="required" />
+<table class='wp-list-table widefat plugins' style="margin-bottom: 2rem;">
+	<thead>
+		<tr>
+			<th colspan='2'>
+				<h2><?php _e( 'CloudFront Cache Control', $text_domain ); ?></h2>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				<b><?php _e( 'Flush Cache by paths', $text_domain ); ?></b><br/>
+				<small><?php _e( 'Provide paths without domain', $text_domain ); ?></small>
+			</td>
+			<td>
+				<form method='post' action=''>
+					<input type='hidden' name='invalidation_type' value='by_path' />
+					<textarea name="invalidation_target" style="width: 100%; height: 100px;" placeholder="/
+/*
+/help-center
+/wireframing-ideation" type="text" required="required"></textarea>
+					<div>
 						<?php echo wp_nonce_field( Constants::C3_INVALIDATION, Constants::C3_INVALIDATION, true, false ); ?>
 						<?php echo get_submit_button( __( 'Flush Cache', $text_domain ), 'primary large', 'Submit', false ); ?>
-					</form>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+					</div>
+				</form>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b><?php _e( 'Flush All Cache', $text_domain ); ?></b><br/>
+				<small><?php _e( "Notice: Every page's cache is removed.", $text_domain ); ?></small>
+			</td>
+			<td>
+				<form method='post' action=''>
+					<input type='hidden' name='invalidation_target' value='all' />
+					<?php echo wp_nonce_field( Constants::C3_INVALIDATION, Constants::C3_INVALIDATION, true, false ); ?>
+					<?php echo get_submit_button( __( 'Flush All Cache', $text_domain ) ); ?>
+				</form>
+			</td>
+		</tr>
+
+		<!-- <tr>
+			<th>
+				<b><?php //_e( 'Flush Cache by Post ids', $text_domain ); ?></b><br/>
+				<small><?php //_e( 'Provide a post ids like (1,2,3)', $text_domain ); ?></small>
+			</th>
+			<td>
+				<form method='post' action=''>
+					<input name="invalidation_target" placeholder="1,2,3" type="text" required="required" />
+					<?php //echo wp_nonce_field( Constants::C3_INVALIDATION, Constants::C3_INVALIDATION, true, false ); ?>
+					<?php //echo get_submit_button( __( 'Flush Cache', $text_domain ), 'primary large', 'Submit', false ); ?>
+				</form>
+			</td>
+		</tr>  -->
+	</tbody>
+</table>
