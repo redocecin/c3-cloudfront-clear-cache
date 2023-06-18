@@ -38,11 +38,11 @@ class Post {
 	/**
 	 * Get the post permalink
 	 *
-	 * @throws \WP_Error If no post provided, should throw it.
+	 * @return \WP_Error|string|false Return permanent link otherwise false if post does not exist, WP_Error if no post provided.
 	 */
 	public function get_permalink() {
 		if ( ! $this->post ) {
-			throw new \WP_Error( 'Post is required' );
+			return new \WP_Error( 'Post is required' );
 		}
 		return get_permalink( $this->post );
 	}
@@ -64,11 +64,11 @@ class Post {
 	/**
 	 * Load the post's term links
 	 *
-	 * @throws \WP_Error If no post provided, should throw it.
+	 * @return \WP_Error|string[] Return WP_Error if no post provided.
 	 */
 	public function get_the_post_term_links() {
 		if ( ! $this->post ) {
-			throw new \WP_Error( 'Post is required' );
+			return new \WP_Error( 'Post is required' );
 		}
 		$post       = $this->post;
 		$taxonomies = get_object_taxonomies( $post->post_type );
@@ -102,12 +102,12 @@ class Post {
 		if ( ! $this->post ) {
 			throw new \WP_Error( 'Post is required' );
 		}
-		$post       = $this->post;
-		$url        = $this->parse_url( get_post_type_archive_link( $post->post_type ) );
+		$post = $this->post;
+		$url  = $this->parse_url( get_post_type_archive_link( $post->post_type ) );
 		if ( is_wp_error( $url ) ) {
 			$url = false;
 		}
-		$home_url   = $this->parse_url( home_url() );
+		$home_url = $this->parse_url( home_url() );
 
 		$links = array();
 		if ( $url && trailingslashit( $home_url ) !== $url ) {
